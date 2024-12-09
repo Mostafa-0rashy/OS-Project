@@ -25,3 +25,4 @@ void clearResources(int signum)
 {
     //TODO Clears all resources in case of interruption
 }
+//test

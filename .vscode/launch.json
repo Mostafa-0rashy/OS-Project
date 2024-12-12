@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "C++: Debug (GDB/LLDB)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/root/OS-Project/process_generator.c",
+        "args": ["processes.txt", "-sch", "5", "-q", "2"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build"
+      }
+    ]
+  }
+  

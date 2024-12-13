@@ -57,38 +57,35 @@ int selectSchedulingAlgo(int scheduling_type,int quantum)
 
 int forkClkScheduler(int ProcessCount,int scheduling_type,int quantum)
 {
+    // Fork clock process
     clk_pid = fork();
     if (clk_pid == -1) {
         perror("Error in fork (clock)");
         exit(-1);
     } else if (clk_pid == 0) {
         execl("./clk.out", "clk.out", NULL);
-        sleep(1);
-        printf("in clk child");
         perror("Error executing clock process");
         exit(-1);
     }
-    else
-    {
-        scheduler_pid = fork();
-    if (scheduler_pid == -1) {
+
+
+    // Fork scheduler process
+    scheduler_pid = fork();
+     if (scheduler_pid == -1) {
         perror("Error in fork (scheduler)");
         exit(-1);
     } else if (scheduler_pid == 0) {
-        char buf1[10], buf2[10], buf3[10];
-        sprintf(buf1, "%d", scheduling_type);
-        sprintf(buf2, "%d", quantum);
-        sprintf(buf3, "%d", processcount); // Send process count
+        
+        // Execute scheduler process
+            char buf1[10], buf2[10], buf3[10];
+        sprintf(buf1, "%d", scheduling_type); 
+        sprintf(buf2, "%d", quantum);           
+        sprintf(buf3, "%d", ProcessCount);  
         execl("./scheduler.out", "scheduler.out", buf1, buf2, buf3, NULL);
         perror("Error executing scheduler process");
         exit(-1);
-    }
-    }
+    return 0; // Parent process continues
 }
-int SendMessage(int msgid, struct Process process) {
-    struct MessageBuffer message;
-    message.process = process;
-    return msgsnd(msgid, &message, sizeof(message.process), !IPC_NOWAIT);
 }
 
 
@@ -118,14 +115,14 @@ int main(int argc, char *argv[]) {
     selectSchedulingAlgo(scheduling_type,quantum);
 
     // 4. Fork scheduler process
-    initClk();
    forkClkScheduler(processcount,scheduling_type,quantum);
-    // Initialize clock for current process
+       // Initialize clock for current process
+    initClk();
     printf("Clock and Scheduler initialized.\n");
     int clk = getClk();
     printf("Current time from clock: %d\n", clk);
-
-
+    sleep(5);
+     
     // 5. Initialize message queue
     key_t key = ftok("keyFile", 65);
     if (key == -1) {
@@ -139,22 +136,26 @@ int main(int argc, char *argv[]) {
     }
 
     // 6. Send processes to scheduler at the appropriate time
-    printf("Current time from clock: %d\n", clk);
     while (!isEmptyQueue(ProcessQueue)) {
         Process process = dequeue(ProcessQueue);
-        printf(" process: %d",process.arrival_time);
+        printf("\nprocess arrived at %d",process.arrival_time);
         while (process.arrival_time > getClk()) {
-            sleep(1);
-            printf("\nIn while loop %d\n", clk);
         }
-        if (SendMessage(msgqid, process) == -1) {
-            perror("Error sending process to scheduler");
-            exit(-1);
-        }
-        printf("Process ID %d sent at time %d\n", process.id, getClk());
+         printf("\nCurrent CLK %d",getClk());
+
+            struct MessageBuffer message;
+            message.process = process;
+            message.mtype = 1;
+            int sent= msgsnd(msgqid, &message, sizeof(message.process), 1);          
+        if (sent == -1) {
+    perror("Error sending process to message queue");
+} else {
+    printf("Process with ID %d sent at time %d\n", message.process.id, getClk());
+}
     }
 
     // Cleanup and exit
+    destroyClk(true);//restarts clk
     return 0;
 }
 
@@ -169,3 +170,4 @@ void clearResources(int signum) {
     destroyClk(true);
     exit(0);
 }
+

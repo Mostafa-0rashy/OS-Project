@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
@@ -14,6 +16,7 @@ typedef struct PCB {
 
 typedef struct Process {
     int id;
+    int processId;
     int arrival_time;
     int runtime;
     int priority;
@@ -30,6 +33,7 @@ struct Process *Create_Process(int id,int at, int rt, int pr)
     assert(p != NULL); //error if memory failed to be allocated
 
     p->id = id;
+    p->processId = -1;  //to know whether the process is newly created or not
     p->arrival_time = at;
     p->runtime = rt;
     p->priority = pr;

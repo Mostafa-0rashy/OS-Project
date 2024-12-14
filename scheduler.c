@@ -16,6 +16,7 @@ struct Process getProcess(int processcount) {
     int r = msgrcv(msgqid, &message, sizeof(message.process), 1, !IPC_NOWAIT);
     printf("Scheduler received process with pid %d from message queue at time %d\n", message.process.id, getClk());
 
+    return message.process;
     
 }
 int main(int argc, char *argv[]) {

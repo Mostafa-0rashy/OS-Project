@@ -2,7 +2,7 @@
 #include "structs.h"
 #include <errno.h>
 
-int getProcess() {
+int getProcess(int processcount) {
     struct MessageBuffer message;
     key_t key = ftok("keyFile", 65);
     int msgqid = msgget(key, IPC_CREAT | 0666);
@@ -11,24 +11,20 @@ int getProcess() {
         perror("Error creating message queue");
         exit(-1);
     }
-
+    int processin=0;
+    while(processin<=processcount)
+    {
     printf("Attempting to receive message...\n");
-
-    int r = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-    printf(" r is %d\n", r);
-    fflush(stdout);
-
-    // Retry if no message was found
-    while (r == -1 && errno == ENOMSG) {
-        printf("No messages yet, retrying...\n");
-        sleep(1);  // Wait for a second before retrying
-        r = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-    }
-
+    int r = msgrcv(msgqid, &message, sizeof(message.process), 1, !IPC_NOWAIT);
     printf("Scheduler received process with pid %d from message queue at time %d\n", message.process.id, getClk());
-}
+    processin++;
 
+    }
+}
 int main(int argc, char *argv[]) {
-    getProcess();
+    initClk();
+    int processcount=atoi(argv[3]);
+    printf("process count is %d",processcount);
+    getProcess(processcount);
     return 0;
 }

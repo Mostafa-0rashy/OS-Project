@@ -105,6 +105,27 @@ void PrintProcessState(Process* process) {
 }
 
 
+void WriteProcessStateToFile(Process* process) {
+    FILE* file = fopen("scheduler_out.txt", "a"); // Open the file in append mode
+    if (file == NULL) {
+        perror("Failed to open scheduler_out.txt");
+        return;
+    }
+
+    fprintf(file, "Process ID: %d\n", process->id);
+    fprintf(file, "State: %s\n", GetStateName(process->pcb.state)); // Helper function to get state name
+    fprintf(file, "Arrival Time: %d\n", process->arrival_time);
+    fprintf(file, "Start Time: %d\n", process->startTime);
+    fprintf(file, "Finish Time: %d\n", process->FinishTime);
+    fprintf(file, "Remaining Time: %d\n", process->pcb.remainingTime);
+    fprintf(file, "Turnaround Time: %d\n", process->pcb.TurnaroundTime);
+    fprintf(file, "Weighted Turnaround Time: %.2f\n", process->pcb.WeightedTurnaroundTime);
+    fprintf(file, "Waiting Time: %d\n", process->pcb.waitingTime);
+    fprintf(file, "----------------------------------\n");
+
+    fclose(file); // Close the file after writing
+}
+
 
 
 //RR_switching --> start running processes
@@ -213,7 +234,8 @@ void RR(){
                         runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
                         runningProcess->FinishTime = c;
                         runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
-                        PrintProcessState(runningProcess); // Log process state to a file
+                        PrintProcessState(runningProcess); // Log process state to the terminal (for debugging)
+                        WriteProcessStateToFile(runningProcess); // Log process state to a file
                         kill(runningProcess->processId, SIGKILL);
                         //free(runningProcess);
                         Terminated_Processes++;
@@ -233,6 +255,7 @@ void RR(){
                         runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
                         runningProcess->FinishTime = c;
                         PrintProcessState(runningProcess); // Log process state to a file
+                        WriteProcessStateToFile(runningProcess); // Log process state to a file
                         //printf("Running process ID: %d", runningProcess->processId);
                         kill(runningProcess->processId, SIGKILL);
                         //free(runningProcess);

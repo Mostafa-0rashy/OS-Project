@@ -22,6 +22,7 @@ typedef struct Process {
     int priority;
     int TimeInProcessor;//Time spent in processor
     int startTime;//Start Time in processor
+    int FinishTime;
     PCB pcb;
 } Process;
 
@@ -58,7 +59,7 @@ void Destroy_Process(struct Process* p)
 typedef struct MessageBuffer
 {
     long mtype;
-    struct Process process;
+    Process process;
 }MessageBuffer;
 
 #endif

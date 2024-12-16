@@ -26,6 +26,8 @@ int quantum;
 int Terminated_Processes = 0; //counts the number of terminated processes
 int ProcessCount; //Stores the total number of processes to be scheduled
 int idle_count;
+float total_wait_time = 0;
+int total_weighted_turnaround_time = 0;
 
 
 
@@ -103,6 +105,24 @@ void PrintProcessState(Process* process) {
     printf("Weighted Turnaround Time: %.2f\n", process->pcb.WeightedTurnaroundTime);
     printf("Waiting Time: %d\n", process->pcb.waitingTime);
     printf("----------------------------------\n");
+}
+
+
+void WritingAverages(float cpu_util, float Average_Wait_Time, float Average_weighted_turnaround_time) {
+    FILE* file = fopen("scheduler_out.txt", "a"); // Open the file in append mode
+    if (file == NULL) {
+        perror("Failed to open scheduler_out.txt");
+        return;
+    }
+    
+    // Writing averages to the file
+    fprintf(file, "----------------------------------\n");
+    fprintf(file, "CPU Utilization = %.2f%%\n", cpu_util); // Added %% for clarity
+    fprintf(file, "Average Wait Time = %.2f\n", Average_Wait_Time);
+    fprintf(file, "Average Weighted Turnaround Time = %.2f\n", Average_weighted_turnaround_time);
+    fprintf(file, "----------------------------------\n");
+
+    fclose(file); // Always close the file
 }
 
 
@@ -246,6 +266,8 @@ void RR(){
                         runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
                         runningProcess->FinishTime = c;
                         runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
+                        total_wait_time += runningProcess->pcb.waitingTime;
+                        total_weighted_turnaround_time += runningProcess->pcb.WeightedTurnaroundTime;
                         PrintProcessState(runningProcess); // Log process state to the terminal (for debugging)
                         WriteProcessStateToFile(runningProcess); // Log process state to a file
                         kill(runningProcess->processId, SIGKILL);
@@ -333,7 +355,15 @@ int main(int argc, char *argv[]) {
             break;
     }
     
-    printf("Idle clk cycles = %d\n", idle_count);
+    int final_clk = getClk();
+    float cpu_util = ((float)(final_clk - idle_count) / final_clk) * 100;
+    float Average_Wait_Time = total_wait_time / ProcessCount;
+    float Average_weighted_turnaround_time = total_weighted_turnaround_time / ProcessCount;
+    printf("CPU Utilization = %.2f\n", cpu_util);
+    printf("Average Wait Time = %.2f\n", Average_Wait_Time);
+    printf("Average Weighted Turnaround Time = %.2f\n", Average_weighted_turnaround_time);
+
+    WritingAverages(cpu_util, Average_Wait_Time, Average_weighted_turnaround_time);
 
     printf("We finished Scheduling and running all of the processes successfully!\n");
 

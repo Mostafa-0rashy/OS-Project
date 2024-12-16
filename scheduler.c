@@ -28,43 +28,6 @@ int ProcessCount; //Stores the total number of processes to be scheduled
 
 
 
-Process* getProcess() {
-    struct MessageBuffer message;
-    key_t key = ftok("keyFile", SCHEDULER_Q_KEY);
-    int msgqid = msgget(key, IPC_CREAT | 0666);
-
-    if (msgqid == -1) {
-        perror("Error creating message queue");
-        exit(-1);
-    }
-    
-    printf("Attempting to receive message...\n");
-    int r = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-    printf("Scheduler received process with pid %d from message queue at time %d\n", message.process.id, getClk());
-
-    return &message.process;
-}
-
-/*
-struct Process getProcess(int processcount) {
-    struct MessageBuffer message;
-    key_t key = ftok("keyFile", 65);
-    int msgqid = msgget(key, IPC_CREAT | 0666);
-
-    if (msgqid == -1) {
-        perror("Error creating message queue");
-        exit(-1);
-    }
-
-    printf("Attempting to receive message...\n");
-    int r = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-    printf("Scheduler received process with pid %d from message queue at time %d\n", message.process.id, getClk());
-
-    return message.process;
-}
-*/
-
-
 
 //helper function to recieve the process from the message queue
 void receiveProcesses(Queue* ready_queue) {
@@ -81,7 +44,7 @@ void receiveProcesses(Queue* ready_queue) {
         if (msgR == -1) {
             // Check if the message queue is empty
             if (errno == ENOMSG) {
-                printf("\nMsg Q is empty\n");
+                //printf("\nMsg Q is empty\n");
                 return;  // Break the loop if the queue is empty
             } else {
                 perror("Error receiving message");
@@ -91,11 +54,11 @@ void receiveProcesses(Queue* ready_queue) {
 
         // Create a new process from the received message
         Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority);
-        printf("Received process id %d at time %d\n", new_process->id, getClk());
+        //printf("Received process id %d at time %d\n", new_process->id, getClk());
 
         // Add the process to the ready queue
         enqueue(ready_queue, new_process);
-        printf("Queue size: %d\n", sizeQueue(ready_queue));
+        //printf("Queue size: %d\n", sizeQueue(ready_queue));
     }
 }
 
@@ -147,14 +110,12 @@ void PrintProcessState(Process* process) {
 //RR_switching --> start running processes
 void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
     int pid;
+    //should not happen
     if(is_queue_empty(rr_ready_queue))
     {
-        *quanta = 0;
-        runningProcess->pcb.remainingTime--;
         return;
     }
     runningProcess = dequeue(rr_ready_queue);
-
     // check if it is a new process
     if (runningProcess->processId == NEW_PROCESS)
     {
@@ -184,9 +145,10 @@ void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
     else{ //preeamtive logic
         runningProcess->pcb.WaitingtimeSoFar = c - runningProcess->arrival_time - runningProcess->runtime + runningProcess->pcb.remainingTime;
         runningProcess->pcb.state = RESUMED_STATE;
-        runningProcess->pcb.waitingTime = c - runningProcess->arrival_time;
         kill(runningProcess->processId, SIGCONT); //giving a signal to the process to continue execution
     }
+    runningProcess->pcb.remainingTime--; //decrease remaining time at context switching
+    *quanta = 1;
 }
 
 
@@ -221,7 +183,7 @@ void RR(){
         
         if(prev_clk != c)
         {
-            printf("\nCurrent Timestep:  %d\n", c);
+            printf("\n-------------------------Current Timestep:  %d----------------------------------\n", c);
             //we finished running and scheduling all processes
             if(Terminated_Processes == ProcessCount){
                 // Cleaning up resources
@@ -233,48 +195,69 @@ void RR(){
             //recieve process from the message queue
             receiveProcesses(rr_ready_queue);
 
-            printf("229\n");
+            //printf("Ready Queue size %d\n", sizeQueue(rr_ready_queue));
             //if ready queue is not empty and currently there is no process running (start the algorithm)
             if(sizeQueue(rr_ready_queue) != EMPTY_READY_Q && runningProcess == NULL){
                 quanta = 0;
-                printf("233\n");
                 RR_Switching(rr_ready_queue, c, &quanta);
+                //printf("241\n");
+                prev_clk = c;
+                continue;
             }
+
             if(runningProcess != NULL){
                 //if process finished before quanta had finished
                 if(runningProcess->pcb.remainingTime == 0){
                         runningProcess->pcb.state = FINISHED_STATE;
                         runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
                         runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
+                        runningProcess->FinishTime = c;
+                        runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
                         PrintProcessState(runningProcess); // Log process state to a file
                         kill(runningProcess->processId, SIGKILL);
-                        free(runningProcess);
+                        //free(runningProcess);
                         Terminated_Processes++;
-                        printf("251\n");
+                        //printf("251\n");
+                        //printf("Running process ID: %d\n", runningProcess->id);
+                        RR_Switching(rr_ready_queue, c, &quanta);
+                        //printf("Running process ID: %d\n", runningProcess->id);
+                        prev_clk = c;
+                        continue;
                     }
                 //TODO: adjust the metrics quanta, runningtime, waittime, ........ 
-                if(quanta == quantum){
-                    printf("239\n");
-                    if(runningProcess->pcb.remainingTime == 0){
+                if(quanta >= quantum){
+                    //printf("239\n");
+                    if(runningProcess->pcb.remainingTime <= 0){
                         runningProcess->pcb.state = FINISHED_STATE;
                         runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
                         runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
                         runningProcess->FinishTime = c;
                         PrintProcessState(runningProcess); // Log process state to a file
+                        //printf("Running process ID: %d", runningProcess->processId);
                         kill(runningProcess->processId, SIGKILL);
-                        free(runningProcess);
+                        //free(runningProcess);
                         Terminated_Processes++;
+                        //either switch or change running process to NULL
+                        //RR_Switching(rr_ready_queue, c, &quanta);
                     }
-                    else{
+                    if(runningProcess->pcb.remainingTime > 0){
                         runningProcess->pcb.state = STOPPED_STATE;
                         kill(runningProcess->processId, SIGSTOP);
+                        enqueue(rr_ready_queue, runningProcess);
                     }
+
+                    //printf("Quanta = %d\n", quanta);
+                    
                     RR_Switching(rr_ready_queue, c, &quanta);
+                    
+                    //printf("Running process ID: %d\n", runningProcess->id);
                 }
                 else{
-                    printf("255\n");
+                    //printf("255\n");
+                    //printf("Running process ID: %d", runningProcess->id);  //wrong process running here
                     quanta++; //incremented each clk tic
                     runningProcess->pcb.remainingTime--; //decrement remaining time by one clk cycle
+                    //printf("Remaining time = %d for process id = %d", runningProcess->pcb.remainingTime, runningProcess->id);
                     //runningProcess->startTime = c; 
                 }
             }

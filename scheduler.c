@@ -25,6 +25,7 @@ int key_id;
 int quantum;
 int Terminated_Processes = 0; //counts the number of terminated processes
 int ProcessCount; //Stores the total number of processes to be scheduled
+int idle_count;
 
 
 
@@ -134,6 +135,7 @@ void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
     //should not happen
     if(is_queue_empty(rr_ready_queue))
     {
+        runningProcess = NULL;
         return;
     }
     runningProcess = dequeue(rr_ready_queue);
@@ -213,8 +215,18 @@ void RR(){
                 break;
             }
 
+
             //recieve process from the message queue
             receiveProcesses(rr_ready_queue);
+
+            //counting idle clk cycles
+            
+            if(sizeQueue(rr_ready_queue) == EMPTY_READY_Q && runningProcess == NULL){
+                idle_count++;
+                prev_clk = c;
+                continue;
+            }
+            
 
             //printf("Ready Queue size %d\n", sizeQueue(rr_ready_queue));
             //if ready queue is not empty and currently there is no process running (start the algorithm)
@@ -321,6 +333,8 @@ int main(int argc, char *argv[]) {
             break;
     }
     
+    printf("Idle clk cycles = %d\n", idle_count);
+
     printf("We finished Scheduling and running all of the processes successfully!\n");
 
     destroyClk(true);

@@ -1,0 +1,5 @@
+----------------------------------
+CPU Utilization = 100.00%
+Average Wait Time = 0.00
+Average Weighted Turnaround Time = 0.00
+----------------------------------

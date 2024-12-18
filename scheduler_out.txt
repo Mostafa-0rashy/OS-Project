@@ -1,0 +1,1145 @@
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 85
+Remaining Time: 0
+Turnaround Time: 77
+Weighted Turnaround Time: 4.81
+Waiting Time: 61
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 91
+Remaining Time: 0
+Turnaround Time: 56
+Weighted Turnaround Time: 7.00
+Waiting Time: 48
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 118
+Remaining Time: 0
+Turnaround Time: 74
+Weighted Turnaround Time: 6.73
+Waiting Time: 63
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 128
+Remaining Time: 0
+Turnaround Time: 95
+Weighted Turnaround Time: 5.94
+Waiting Time: 79
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 132
+Remaining Time: 0
+Turnaround Time: 116
+Weighted Turnaround Time: 5.27
+Waiting Time: 94
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 136
+Remaining Time: 0
+Turnaround Time: 117
+Weighted Turnaround Time: 5.32
+Waiting Time: 95
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+----------------------------------
+CPU Utilization = 94.37%
+Average Wait Time = 55.20
+Average Weighted Turnaround Time = 5.00
+----------------------------------
+Process ID: 5
+State: FINISHED
+Arrival Time: 26
+Start Time: 32
+Finish Time: 34
+Remaining Time: 0
+Turnaround Time: 8
+Weighted Turnaround Time: 4.00
+Waiting Time: 6
+----------------------------------
+Process ID: 10
+State: FINISHED
+Arrival Time: 51
+Start Time: 66
+Finish Time: 68
+Remaining Time: 0
+Turnaround Time: 17
+Weighted Turnaround Time: 8.50
+Waiting Time: 15
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 8
+Start Time: 8
+Finish Time: 70
+Remaining Time: 0
+Turnaround Time: 62
+Weighted Turnaround Time: 3.88
+Waiting Time: 46
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 11
+Start Time: 12
+Finish Time: 71
+Remaining Time: 0
+Turnaround Time: 60
+Weighted Turnaround Time: 4.62
+Waiting Time: 47
+----------------------------------
+Process ID: 7
+State: FINISHED
+Arrival Time: 35
+Start Time: 44
+Finish Time: 89
+Remaining Time: 0
+Turnaround Time: 54
+Weighted Turnaround Time: 6.75
+Waiting Time: 46
+----------------------------------
+Process ID: 8
+State: FINISHED
+Arrival Time: 44
+Start Time: 54
+Finish Time: 116
+Remaining Time: 0
+Turnaround Time: 72
+Weighted Turnaround Time: 6.55
+Waiting Time: 61
+----------------------------------
+Process ID: 6
+State: FINISHED
+Arrival Time: 33
+Start Time: 42
+Finish Time: 126
+Remaining Time: 0
+Turnaround Time: 93
+Weighted Turnaround Time: 5.81
+Waiting Time: 77
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 16
+Start Time: 18
+Finish Time: 130
+Remaining Time: 0
+Turnaround Time: 114
+Weighted Turnaround Time: 5.18
+Waiting Time: 92
+----------------------------------
+Process ID: 4
+State: FINISHED
+Arrival Time: 19
+Start Time: 24
+Finish Time: 134
+Remaining Time: 0
+Turnaround Time: 115
+Weighted Turnaround Time: 5.23
+Waiting Time: 93
+----------------------------------
+Process ID: 9
+State: FINISHED
+Arrival Time: 51
+Start Time: 64
+Finish Time: 141
+Remaining Time: 0
+Turnaround Time: 90
+Weighted Turnaround Time: 4.29
+Waiting Time: 69
+----------------------------------
+----------------------------------
+CPU Utilization = 94.37%
+Average Wait Time = 55.20
+Average Weighted Turnaround Time = 5.00
+----------------------------------
+----------------------------------
+CPU Utilization = 100.00%
+Average Wait Time = 0.00
+Average Weighted Turnaround Time = 0.00
+----------------------------------
+----------------------------------
+CPU Utilization = -nan%
+Average Wait Time = 0.00
+Average Weighted Turnaround Time = 0.00
+----------------------------------
+Process ID: 2
+State: FINISHED
+Arrival Time: 2
+Start Time: 4
+Finish Time: 11
+Remaining Time: 0
+Turnaround Time: 9
+Weighted Turnaround Time: 3.00
+Waiting Time: 6
+----------------------------------
+Process ID: 1
+State: FINISHED
+Arrival Time: 2
+Start Time: 2
+Finish Time: 47
+Remaining Time: 0
+Turnaround Time: 45
+Weighted Turnaround Time: 2.05
+Waiting Time: 23
+----------------------------------
+Process ID: 3
+State: FINISHED
+Arrival Time: 3
+Start Time: 6
+Finish Time: 49
+Remaining Time: 0
+Turnaround Time: 46
+Weighted Turnaround Time: 2.09
+Waiting Time: 24
+----------------------------------
+----------------------------------
+CPU Utilization = 96.00%
+Average Wait Time = 17.67
+Average Weighted Turnaround Time = 2.00
+----------------------------------

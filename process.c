@@ -18,7 +18,7 @@ int main()
     //error check
     if(msgq_id == ERROR){
         perror("Cannot create message queue!\n");
-        exit(Error); //exiting from process with error code -1
+        exit(-1); //exiting from process with error code -1
     }
 
     //TODO The process needs to get the remaining time from somewhere 
@@ -26,7 +26,7 @@ int main()
 
     if(msgrcv(msgq_id, &msgProcess, sizeof(msgProcess) - sizeof(long), PROCESS_LOCK, !IPC_NOWAIT) == ERROR){
         perror("Error receiving message!\n");
-        exit(Error);
+        exit(ERROR);
     }
 
     while(msgProcess.process.pcb.remainingTime > 0){

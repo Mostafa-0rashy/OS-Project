@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 
     int scheduling_type = atoi(argv[2]);
     int quantum = 0;
-    if (scheduling_type == 3) {
+    if (scheduling_type == 3||scheduling_type == 4) {
         quantum = atoi(argv[3]);
     }
     selectSchedulingAlgo(scheduling_type, quantum);
@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
 
         free(process); // Free memory after sending
     }
+
 
     while(true) {} //busy wait
 

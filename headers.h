@@ -11,8 +11,10 @@
 #include <unistd.h>
 #include <signal.h>
 #include "Queue.h"
+#include "PQueue.h"
 #include "structs.h"
 #include <stdbool.h>
+#include <errno.h>
 
 
 #define true 1

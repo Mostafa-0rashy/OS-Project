@@ -764,6 +764,20 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
         //run each process in each queue and demote it
       
             runningProcess = dequeue(priorityQueue);
+
+            // Check if the process arrived at the current clock tick
+    if (runningProcess->arrival_time == c) {
+        int prevclk2=getClk();
+        int currentclk2=getClk();
+        //busy wait to run the process after its arrival time by one time step
+       while(prevclk2==currentclk2){
+        currentclk2=getClk();
+       }
+       printf("Arrived at %d should start running at %d ",runningProcess->arrival_time,getClk());
+    }
+
+
+
              int startClk = getClk();  // Starting time of this process
             int endClk = startClk + quanta;  // The time when this quantum will end
             // printf("\n END CLK IS %d\n",endClk);
@@ -820,7 +834,7 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                     prevClk = currentClk; 
                     if (runningProcess->pcb.remainingTime > 0) 
                     {
-                        runningProcess->pcb.c--;
+                        runningProcess->pcb.remainingTime--;
                         printf("\nREM TIME FOR PROCESS %d is %d\n",runningProcess->id,runningProcess->pcb.remainingTime);
                     }           
                 if (runningProcess->pcb.remainingTime == 0) {

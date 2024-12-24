@@ -1,5 +1,4 @@
 #include "headers.h"
-
 #define PROCESS_GEN_SCHEDULER 1
 #define SCHEDULER_Q_KEY 65
 #define ERROR -1
@@ -16,8 +15,7 @@
 #define CHILD_PROCESS 0
 #define sleep_seconds 200000
 #define MAX_PRIORITY 12
-
-
+#define MemorySize   1024
 //global variables
 Process* runningProcess = NULL;  //points to current running process
 MessageBuffer message; //hold the message received from the message queue of the schedular
@@ -29,12 +27,13 @@ int ProcessCount; //Stores the total number of processes to be scheduled
 int idle_count;
 float total_wait_time = 0;
 int total_weighted_turnaround_time = 0;
+MemoryBlock* Memory;
 
 
 
 
 //helper function to recieve the process from the message queue
-void receiveProcesses(Queue* ready_queue) {
+void receiveProcesses(Queue* ready_queue,Queue*Blocked_queue) {
     MessageBuffer RR_msg;
     int msgR;
 
@@ -57,12 +56,20 @@ void receiveProcesses(Queue* ready_queue) {
         }
 
         // Create a new process from the received message
-        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority);
-        //printf("Received process id %d at time %d\n", new_process->id, getClk());
-
-        // Add the process to the ready queue
-        enqueue(ready_queue, new_process);
-        //printf("Queue size: %d\n", sizeQueue(ready_queue));
+        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority,message.process.memSize);
+        if (allocate_memory(Memory,new_process->memSize,new_process->id))
+        {
+            printf("\nMemory for ID:%d is allocated successfully\n",new_process->id);
+            enqueue(ready_queue, new_process);// Add the process to the ready queue
+        }
+        else
+        {
+            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n",new_process->id);
+            printf("Process ID:%d going to blocked queue",new_process->id);
+            enqueue(Blocked_queue,new_process);
+        }
+        
+        
     }
 }
 
@@ -90,7 +97,7 @@ void preceiveProcesses(PQueue* ready_queue) {
         }
 
         // Create a new process from the received message
-        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority);
+        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority,message.process.memSize);
         //printf("Received process id %d at time %d\n", new_process->id, getClk());
 
         // Add the process to the ready queue
@@ -245,7 +252,8 @@ void RR(){
 
     //enqueueing encoming process
     Queue* rr_ready_queue = create_queue();
-
+    //for blocked processes
+    Queue*Blocked_queue=create_queue();
     //initialising quanta
     int quanta = 0;
 
@@ -278,7 +286,7 @@ void RR(){
 
 
             //recieve process from the message queue
-            receiveProcesses(rr_ready_queue);
+            receiveProcesses(rr_ready_queue,Blocked_queue);
 
             //counting idle clk cycles
             
@@ -315,6 +323,21 @@ void RR(){
                         kill(runningProcess->processId, SIGKILL);
                         //free(runningProcess);
                         Terminated_Processes++;
+                        Process *BlockedProcess = peek(Blocked_queue);
+                        deallocate_memory(Memory, runningProcess->id);
+                        free(runningProcess);
+                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        {
+                            dequeue(Blocked_queue);
+                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                            enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
+                        }
+                        else
+                        {
+                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                            enqueue(Blocked_queue, BlockedProcess);
+                        }
+
                         //printf("251\n");
                         //printf("Running process ID: %d\n", runningProcess->id);
                         RR_Switching(rr_ready_queue, c, &quanta);
@@ -336,6 +359,21 @@ void RR(){
                         //printf("Running process ID: %d", runningProcess->processId);
                         kill(runningProcess->processId, SIGKILL);
                         //free(runningProcess);
+                        Process *BlockedProcess = peek(Blocked_queue);
+                        deallocate_memory(Memory, runningProcess->id);
+                        free(runningProcess);
+                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        {
+                            dequeue(Blocked_queue);
+                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                            enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
+                        }
+                        else
+                        {
+                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                            enqueue(Blocked_queue, BlockedProcess);
+                        }
+
                         Terminated_Processes++;
                         //either switch or change running process to NULL
                         //RR_Switching(rr_ready_queue, c, &quanta);
@@ -589,7 +627,8 @@ void HPF()
     // Create a queue for new processes and a priority queue for scheduling
     Queue *temp_queue = create_queue();
     PQueue *hpf_ready_queue = pcreate_queue();
-
+    //for blocked processes
+    Queue*Blocked_queue=create_queue();
     // Initialize the message queue
     key_id = ftok("keychain", SCHEDULER_Q_KEY);
     msgq_id = msgget(key_id, 0666 | IPC_CREAT);
@@ -620,7 +659,7 @@ void HPF()
             }
 
             // Receive new processes
-            receiveProcesses(temp_queue);
+            receiveProcesses(temp_queue,Blocked_queue);
 
             // Transfer processes from the temporary queue to the priority queue
             while (!is_queue_empty(temp_queue))
@@ -754,7 +793,7 @@ void demoteProcess(Process *process, Queue** priorityQueues, int crntpriority) {
 }
 
 // Function to schedule the next process
-void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue ** priorityQueues) {
+void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue ** priorityQueues,Queue*BlockedQueue,Queue*ready_queue) {
     // Loop over all priority levels (from highest to lowest)
              if (is_queue_empty(priorityQueue)) 
                  {  
@@ -775,9 +814,6 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
        }
        printf("Arrived at %d should start running at %d ",runningProcess->arrival_time,getClk());
     }
-
-
-
              int startClk = getClk();  // Starting time of this process
             int endClk = startClk + quanta;  // The time when this quantum will end
             // printf("\n END CLK IS %d\n",endClk);
@@ -847,11 +883,27 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 Terminated_Processes++;
                 kill(runningProcess->processId, SIGKILL);  // Terminate the process
                 PrintProcessState(runningProcess);
+                Process*BlockedProcess=peek(BlockedQueue);
+                printf("\nBlocked Queue size:%d\n",sizeQueue(BlockedQueue));
+                deallocate_memory(Memory,runningProcess->id);
                 free(runningProcess);
-                return;  // Exit as the process has finished
-            }
-
-           
+                if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                {
+                    if(sizeQueue(BlockedQueue)!=0)
+                    {
+                        printf("\nBlocked Queue size:%d\n",sizeQueue(BlockedQueue));
+                        dequeue(BlockedQueue);
+                    }
+                    printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                    enqueue(ready_queue, BlockedProcess); // Add the process to the ready queue
+                }
+                else
+                {
+                    printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                    enqueue(BlockedQueue, BlockedProcess);
+                }
+                return; // Exit as the process has finished
+                }
             }
     }
              // If the process has remaining time after the quantum, stop and demote it
@@ -872,6 +924,7 @@ void MLFQ(int quanta, int processcount) {
     int c = getClk();  // Get the current clock time
     Queue* priorityQueues[MAX_PRIORITY];  // Array of priority queues
     Queue* RDYQUEUE = create_queue();  // Ready queue to temporarily hold incoming processes
+    Queue*Blocked_queue=create_queue();    //for blocked processes
     initMLFQ(priorityQueues);  // Initialize the priority queues
     
     int prevClk = -1;  // Store the previous clock tick
@@ -890,7 +943,7 @@ void MLFQ(int quanta, int processcount) {
                 break;
             }
             printf("At Time %d: Checking for new messages...\n", currentClk);
-            receiveProcesses(RDYQUEUE);  // Receive processes and add them to the ready queue
+            receiveProcesses(RDYQUEUE,Blocked_queue);  // Receive processes and add them to the ready queue
 
             // If there are processes in the RDYQUEUE, add them to the appropriate priority queue
             if (!is_queue_empty(RDYQUEUE)) {
@@ -924,10 +977,10 @@ void MLFQ(int quanta, int processcount) {
                 if(processesPresent>0){
                  // Check all queues after each clk tick and assign running process
                  for (int i = 0; i < MAX_PRIORITY; i++) //start from 0 highest priority to 10 Lowest priority
-                 {       printf("\nChecking queue number %d\n",i);
+                 {      // printf("\nChecking queue number %d\n",i);
                             if (!is_queue_empty(priorityQueues[i]))
                              {
-                                MLFQ_Switching(priorityQueues[i], quanta, currentClk, i, priorityQueues);
+                                MLFQ_Switching(priorityQueues[i], quanta, currentClk, i, priorityQueues,Blocked_queue,RDYQUEUE);
                                 break;
                             }
                 }
@@ -955,7 +1008,7 @@ void MLFQ(int quanta, int processcount) {
 
 int main(int argc, char *argv[]) {
     initClk();
-    
+    Memory=initialize_memory(MemorySize);
     int AlgoType = atoi(argv[1]);
     quantum = atoi(argv[2]);
     ProcessCount = atoi(argv[3]);

@@ -135,5 +135,15 @@ void pfree_queue(PQueue *q)
     }
     free(q);
 }
+Process* PPeek(Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty.\n");
+        return NULL; // Return a sentinel value or handle it appropriately
+    }
+    return queue->front->data;
+}
+
+
+
 
 #endif // PQUEUE_H

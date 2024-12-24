@@ -1,5 +1,4 @@
-#include <assert.h>
-
+#include<assert.h>
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
@@ -23,12 +22,13 @@ typedef struct Process {
     int TimeInProcessor;//Time spent in processor
     int startTime;//Start Time in processor
     int FinishTime;
+    int memSize;
     PCB pcb;
 } Process;
 
 
 //Process constructor
-struct Process *Create_Process(int id,int at, int rt, int pr)
+struct Process *Create_Process(int id,int at, int rt, int pr,int memory)
 {
     struct Process *p = malloc(sizeof(struct Process));
     assert(p != NULL); //error if memory failed to be allocated
@@ -38,6 +38,7 @@ struct Process *Create_Process(int id,int at, int rt, int pr)
     p->arrival_time = at;
     p->runtime = rt;
     p->priority = pr;
+    p->memSize=memory;
     p->pcb.state=0;
     p->pcb.remainingTime= rt;
     p->pcb.waitingTime=0;
@@ -61,5 +62,8 @@ typedef struct MessageBuffer
     long mtype;
     Process process;
 }MessageBuffer;
+
+
+
 
 #endif

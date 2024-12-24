@@ -33,9 +33,9 @@ void readfile() {
             exit(1);
         }
 
-        sscanf(line, "%d\t%d\t%d\t%d", &p->id, &p->arrival_time, &p->runtime, &p->priority);
+        sscanf(line, "%d\t%d\t%d\t%d\t%d", &p->id, &p->arrival_time, &p->runtime, &p->priority,&p->memSize);
         processcount++;
-        printf("\n%d\t%d\t%d\t%d\n",  p->id, p->arrival_time, p->runtime, p->priority);
+        printf("\n%d\t%d\t%d\t%d\t%d\n",  p->id, p->arrival_time, p->runtime, p->priority,p->memSize);
         enqueue(ProcessQueue, p); // Pass the pointer to the queue
     }
     fclose(file);

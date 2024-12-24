@@ -94,4 +94,13 @@ void free_queue(Queue* q) {
     free(q);
 }
 
+
+Process* peek(Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty.\n");
+        return NULL; // Return a sentinel value or handle it appropriately
+    }
+    return queue->front->data;
+}
+
 #endif // QUEUE_H

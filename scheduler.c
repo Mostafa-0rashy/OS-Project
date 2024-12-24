@@ -333,12 +333,15 @@ void RR(){
                         Terminated_Processes++;
                         Process *BlockedProcess = peek(Blocked_queue);
                         deallocate_memory(Memory, runningProcess->id);
+                           if(BlockedProcess!=NULL){
                         if(Terminated_Processes==ProcessCount)
                         {
                              printf("\nOUTTTT\n");
                             return;
                         }
-                        free(runningProcess);
+                        free(runningProcess);  
+                          if(BlockedProcess!=NULL){
+
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
@@ -350,7 +353,8 @@ void RR(){
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
-
+                           }
+                           }
                         //printf("251\n");
                         //printf("Running process ID: %d\n", runningProcess->id);
                         RR_Switching(rr_ready_queue, c, &quanta);
@@ -380,6 +384,7 @@ void RR(){
                             return;
                         }
                         free(runningProcess);
+                           if(BlockedProcess!=NULL){
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
@@ -391,7 +396,7 @@ void RR(){
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
-
+                           }
                         Terminated_Processes++;
                         //either switch or change running process to NULL
                         //RR_Switching(rr_ready_queue, c, &quanta);
@@ -529,6 +534,7 @@ void SJF()
                         }
                         // Terminate the process and clean up
                         free(runningProcess);
+                           if(BlockedProcess!=NULL){
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
@@ -540,7 +546,7 @@ void SJF()
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
-
+                           }
 
 
 
@@ -769,6 +775,7 @@ void HPF()
                             return;
                         }
                         free(runningProcess);
+                           if(BlockedProcess!=NULL){
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
@@ -780,6 +787,7 @@ void HPF()
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
+                           }
 
 
 
@@ -971,6 +979,8 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                     return;
                 }
                 free(runningProcess);
+                if(BlockedProcess!=NULL)
+                {
                 if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                 {
                     if(sizeQueue(BlockedQueue)!=0)
@@ -985,6 +995,7 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 {
                     printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                     enqueue(BlockedQueue, BlockedProcess);
+                }
                 }
                 return; // Exit as the process has finished
                 }

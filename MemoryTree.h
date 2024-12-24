@@ -90,12 +90,19 @@ MemoryBlock* allocate_memory(MemoryBlock* node, int size,int pid)
 
 int MergeBlocks(MemoryBlock*root)
 {
-    if (root == NULL || root->left == NULL || root->right == NULL)//nothing to merge
+    printf("\nMerging size:%d\n",root->size);
+    if(root== NULL)
     {
+        return 0;
+    }
+    if ( root->left == NULL || root->right == NULL)//nothing to merge
+    {
+        printf("Childern Nothing to merge");
         return 0;
     }
     if( root->left->left || root->left->right || root->right->left || root->right->right)//children still unmerged
     {
+        printf("Childern Still unmegred");
         return 0;
     }
 
@@ -104,10 +111,12 @@ int MergeBlocks(MemoryBlock*root)
         printf("\nMerging blocks of size %d and %d   With address from %d to %d\n ", root->left->size, root->right->size,root->left->start,root->right->end);
             free(root->left);
             free(root->right);
+
             root->left = NULL;
             root->right = NULL;
             root->is_free = 1;
             root->is_Divided=0;
+            printf("\nMERGEEE DONEEEE\n");
             return 1;
     }
 return 0;
@@ -115,59 +124,40 @@ return 0;
 
 int deallocate_memory(MemoryBlock *root, int NodeId)
 {
- if (root == NULL)
-    {
-        return 0;
+    if (root == NULL || !root->right && !root->left) {
+        return 0; 
     }
-    if (root->left && root->left->pid == NodeId)
-    {
-        printf("Deallocating Memory size:%d in left\n",root->left->size);
+
+    printf("\nROOT: %d\n", root->size);
+
+    // Check and deallocate left child
+    if (root->left && root->left->pid == NodeId) {
+        printf("Deallocating Memory size: %d in left\n", root->left->size);
         root->left->is_free = 1;
         root->left->pid = -1;
-        root->is_Divided=0;
-        MergeBlocks(root);
+        MergeBlocks(root); // Attempt to merge after freeing
+        return 1; 
     }
-    if (root->right && root->right->pid == NodeId)
-    {
-        printf("Deallocating Memory size:%d in right\n",root->right->size);
+
+    // Check and deallocate right child
+    if (root->right && root->right->pid == NodeId) {
+        printf("Deallocating Memory size: %d in right\n", root->right->size);
         root->right->is_free = 1;
         root->right->pid = -1;
-         MergeBlocks(root);
+        MergeBlocks(root); // Attempt to merge after freeing
+        return 1; // Successful deallocation
     }
 
-    //Go Left
-    int dealloc=deallocate_memory(root->left,NodeId);
-    if(dealloc==0)
-    {
-        dealloc=deallocate_memory(root->right,NodeId);
+    // Recursively search in the left and right subtrees
+    int dealloc = 0;
+    if (root->left) {
+        dealloc = deallocate_memory(root->left, NodeId);
     }
+    if (!dealloc && root->right) { // Only search right if not already deallocated
+        dealloc = deallocate_memory(root->right, NodeId);
+    }
+    printf("\nSTART MERGING AGAIN\n");
     MergeBlocks(root);
+    printf("\nI AM DONE\n");
     return dealloc;
 }
-
-
-
-
-//-----------Testing Memory-----------//
-// int main() {
-//     // Initialize memory tree with 1024 bytes
-//     MemoryBlock* memory_root = initialize_memory(1024);
-
-//     // // Test allocations
-//     //  allocate_memory(memory_root, 120, 1); // Allocate 120 bytes for PID 1
-//     //  allocate_memory(memory_root, 64, 2);  // Allocate 64 bytes for PID 2
-//     //  allocate_memory(memory_root, 512, 3); // Allocate 512 bytes for PID 3
-//     //  allocate_memory(memory_root, 200, 4); // Allocate 200 bytes for PID 4
-//     //  allocate_memory(memory_root, 200, 5); // Allocate 200 bytes for PID 4
-//     allocate_memory(memory_root, 60, 1); 
-//     allocate_memory(memory_root, 60, 2);
-//     allocate_memory(memory_root,512,3);
-//     deallocate_memory(memory_root,1);
-//     allocate_memory(memory_root,250,4);
-//     allocate_memory(memory_root,250,6);
-
-
-
-
-//     return 0;
-// }

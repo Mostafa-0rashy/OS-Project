@@ -1,4 +1,2 @@
 #ID  ARR  RunTime  Priority    MemSize
-1	1	11	5  512
-2   1   11  6  256
-3   1   10  9  512
+1	2	5	5  128

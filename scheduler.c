@@ -74,7 +74,7 @@ void receiveProcesses(Queue* ready_queue,Queue*Blocked_queue) {
 }
 
 
-void preceiveProcesses(PQueue* ready_queue) {
+void preceiveProcesses(PQueue* ready_queue,Queue*Blocked_queue) {
     MessageBuffer RR_msg;
     int msgR;
 
@@ -98,10 +98,18 @@ void preceiveProcesses(PQueue* ready_queue) {
 
         // Create a new process from the received message
         Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority,message.process.memSize);
-        //printf("Received process id %d at time %d\n", new_process->id, getClk());
-
-        // Add the process to the ready queue
-        penqueue(ready_queue, new_process,1);
+        if (allocate_memory(Memory,new_process->memSize,new_process->id))
+        {
+            printf("\nMemory for ID:%d is allocated successfully\n",new_process->id);
+            penqueue(ready_queue, new_process,1);// Add the process to the ready queue
+        }
+        else
+        {
+            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n",new_process->id);
+            printf("Process ID:%d going to blocked queue",new_process->id);
+            enqueue(Blocked_queue,new_process);
+        }
+        
         //printf("Queue size: %d\n", sizeQueue(ready_queue));
     }
 }
@@ -325,6 +333,11 @@ void RR(){
                         Terminated_Processes++;
                         Process *BlockedProcess = peek(Blocked_queue);
                         deallocate_memory(Memory, runningProcess->id);
+                        if(Terminated_Processes==ProcessCount)
+                        {
+                             printf("\nOUTTTT\n");
+                            return;
+                        }
                         free(runningProcess);
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
@@ -361,6 +374,11 @@ void RR(){
                         //free(runningProcess);
                         Process *BlockedProcess = peek(Blocked_queue);
                         deallocate_memory(Memory, runningProcess->id);
+                        if(Terminated_Processes==ProcessCount)
+                        {
+                             printf("\nOUTTTT\n");
+                            return;
+                        }
                         free(runningProcess);
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
@@ -419,6 +437,7 @@ void SJF()
 
     // Create a priority queue for SJF
     PQueue *sjf_ready_queue = pcreate_queue();
+    Queue*Blocked_queue=create_queue();    //for blocked processes
 
     // Initialize message queue
     key_id = ftok("keychain", SCHEDULER_Q_KEY);
@@ -449,7 +468,7 @@ void SJF()
             }
 
             // Receive processes from the message queue
-            preceiveProcesses(sjf_ready_queue);
+            preceiveProcesses(sjf_ready_queue,Blocked_queue);
 
             // If the ready queue is not empty and no process is running, start a new process
             if (psizeQueue(sjf_ready_queue) != EMPTY_READY_Q && runningProcess == NULL)
@@ -499,10 +518,32 @@ void SJF()
                     PrintProcessState(runningProcess);
                     WriteProcessStateToFile(runningProcess);
 
-                    // Terminate the process and clean up
                     kill(runningProcess->processId, SIGKILL);
-                    free(runningProcess); // Free memory after process termination
                     Terminated_Processes++;
+                    Process *BlockedProcess = peek(Blocked_queue);
+                        deallocate_memory(Memory, runningProcess->id);
+                        if(Terminated_Processes==ProcessCount)
+                        {
+                             printf("\nOUTTTT\n");
+                            return;
+                        }
+                        // Terminate the process and clean up
+                        free(runningProcess);
+                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        {
+                            dequeue(Blocked_queue);
+                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                            penqueue(sjf_ready_queue, BlockedProcess,1); // Add the process to the ready queue
+                        }
+                        else
+                        {
+                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                            enqueue(Blocked_queue, BlockedProcess);
+                        }
+
+
+
+
                     
                     printf("ahla mesa");
 
@@ -719,9 +760,47 @@ void HPF()
                     {
                         kill(runningProcess->processId, SIGKILL); // Safely terminate??
                     }
-                    free(runningProcess);
-                    runningProcess = NULL; // to avoid accessing invalid pointer after deallocating the memory
                     Terminated_Processes++;
+                    Process *BlockedProcess = peek(Blocked_queue);
+                        deallocate_memory(Memory, runningProcess->id);
+                        if(Terminated_Processes==ProcessCount)
+                        {
+                             printf("\nOUTTTT\n");
+                            return;
+                        }
+                        free(runningProcess);
+                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        {
+                            dequeue(Blocked_queue);
+                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                            penqueue(hpf_ready_queue, BlockedProcess,0); // Add the process to the ready queue
+                        }
+                        else
+                        {
+                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                            enqueue(Blocked_queue, BlockedProcess);
+                        }
+
+
+
+
+
+
+
+
+
+
+                    
+
+
+
+
+
+
+
+
+
+                    runningProcess = NULL; // to avoid accessing invalid pointer after deallocating the memory
                     HPF_Switching(hpf_ready_queue, c);
                     WriteProcessStateToFile(runningProcess);
                     prev_clk = c; // to avoid decrementing the remaining time twice in one timestep
@@ -886,6 +965,11 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 Process*BlockedProcess=peek(BlockedQueue);
                 printf("\nBlocked Queue size:%d\n",sizeQueue(BlockedQueue));
                 deallocate_memory(Memory,runningProcess->id);
+                if(Terminated_Processes==ProcessCount)
+                {
+                    printf("\nOUTTTT\n");
+                    return;
+                }
                 free(runningProcess);
                 if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                 {

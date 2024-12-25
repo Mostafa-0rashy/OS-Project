@@ -951,6 +951,7 @@ void demoteProcess(Process *process, Queue **priorityQueues, int crntpriority)
 // Function to schedule the next process
 void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue **priorityQueues, Queue *BlockedQueue, Queue *ready_queue)
 {
+    static int last_finish_time = -1; // Track the last finish time of a process
     // Loop over all priority levels (from highest to lowest)
     if (is_queue_empty(priorityQueue))
     {
@@ -972,6 +973,13 @@ void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue
             currentclk2 = getClk();
         }
         printf("Arrived at %d should start running at %d ", runningProcess->arrival_time, getClk());
+    }
+
+    int currentClk = getClk();
+    while (currentClk <= last_finish_time)
+    {
+        currentClk = getClk();
+        // Waiting for next time step after termination.
     }
 
     int startClk = getClk();        // Starting time of this process
@@ -1063,7 +1071,7 @@ void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue
                         dequeue(BlockedQueue);
                         printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
                         enqueue(ready_queue, BlockedProcess); // Add the process to the ready queue
-                        // WritememToFile(BlockedProcess,Memory);
+                        WritememToFile(BlockedProcess, Memory);
                     }
                     else
                     {
@@ -1074,7 +1082,7 @@ void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue
                 {
                     printf("\nNo Blocked Process\n");
                 }
-
+                last_finish_time = getClk();
                 return; // Exit as the process has finished
             }
         }

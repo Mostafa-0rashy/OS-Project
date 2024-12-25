@@ -1,5 +1,5 @@
 ----------------------------------
-CPU Utilization = 96.97%
-Average Wait Time = 14.00
-Average Weighted Turnaround Time = 1.00
+CPU Utilization = 100.00%
+Average Wait Time = 2.20
+Average Weighted Turnaround Time = 2.20
 ----------------------------------

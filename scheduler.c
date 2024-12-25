@@ -64,7 +64,7 @@ void receiveProcesses(Queue *ready_queue, Queue *Blocked_queue)
         {
             printf("\nMemory for ID:%d is allocated successfully\n", new_process->id);
             enqueue(ready_queue, new_process); // Add the process to the ready queue
-            // WritememToFile(new_process,Memory);
+            WritememToFile(new_process, Memory);
         }
         else
         {
@@ -242,11 +242,11 @@ void WritememToFile(Process *process, MemoryBlock *root)
 
     if (process->pcb.remainingTime == 0 && GetStateName(process->pcb.state) == "FINISHED")
     {
-        fprintf(file, "At time %d freed %d bytes for process %d  from %d to %d\n", getClk(), process->memSize, process->id, allocatedBlock->start, allocatedBlock->end);
+        fprintf(file, "At time %d freed %d bytes for process %d  from %d to %d\n", getClk(), allocatedBlock->size, process->id, allocatedBlock->start, allocatedBlock->end);
     }
     else
     {
-        fprintf(file, "At time %d allocated %d bytes for process %d  from %d to %d\n", getClk(), process->memSize, process->id, allocatedBlock->start, allocatedBlock->end);
+        fprintf(file, "At time %d allocated %d bytes for process %d  from %d to %d\n", getClk(), allocatedBlock->size, process->id, allocatedBlock->start, allocatedBlock->end);
     }
     fclose(file); // Close the file after writing
 }
@@ -269,7 +269,7 @@ void RR_Switching(Queue *rr_ready_queue, int c, int *quanta)
         runningProcess->pcb.state = STARTED_STATE;
         runningProcess->pcb.waitingTime = c - runningProcess->arrival_time;
         runningProcess->startTime = c;
-        WritememToFile(runningProcess, Memory);
+        // WritememToFile(runningProcess, Memory);
 
         // fork new process
         pid = fork();
@@ -773,7 +773,7 @@ void HPF()
             while (!is_queue_empty(temp_queue))
             {
                 Process *process = dequeue(temp_queue);
-                WritememToFile(process, Memory);
+                // WritememToFile(process, Memory);
                 printf("[Time %d] New Process Received: ID=%d, Priority=%d, Arrival=%d\n",
                        c, process->id, process->priority, process->arrival_time);
                 penqueue(hpf_ready_queue, process, 0); // Priority-based enqueue
@@ -981,8 +981,8 @@ void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue
         runningProcess->pcb.waitingTime = c - runningProcess->arrival_time;
         runningProcess->startTime = c;
         WriteProcessStateToFile(runningProcess);
-        WritememToFile(runningProcess, Memory);
-        // fork new process
+        // WritememToFile(runningProcess, Memory);
+        //  fork new process
         int pid = fork();
         if (pid == ERROR)
         {

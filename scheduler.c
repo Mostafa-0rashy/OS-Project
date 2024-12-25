@@ -15,25 +15,23 @@
 #define CHILD_PROCESS 0
 #define sleep_seconds 200000
 #define MAX_PRIORITY 12
-#define MemorySize   1024
-//global variables
-Process* runningProcess = NULL;  //points to current running process
-MessageBuffer message; //hold the message received from the message queue of the schedular
-int msgq_id; //global variable of message queue (running queue of the scheduling algorithm)
+#define MemorySize 1024
+// global variables
+Process *runningProcess = NULL; // points to current running process
+MessageBuffer message;          // hold the message received from the message queue of the schedular
+int msgq_id;                    // global variable of message queue (running queue of the scheduling algorithm)
 int key_id;
 int quantum;
-int Terminated_Processes = 0; //counts the number of terminated processes
-int ProcessCount; //Stores the total number of processes to be scheduled
+int Terminated_Processes = 0; // counts the number of terminated processes
+int ProcessCount;             // Stores the total number of processes to be scheduled
 int idle_count;
 float total_wait_time = 0;
 int total_weighted_turnaround_time = 0;
-MemoryBlock* Memory;
+MemoryBlock *Memory;
 
-
-
-
-//helper function to recieve the process from the message queue
-void receiveProcesses(Queue* ready_queue,Queue*Blocked_queue) {
+// helper function to recieve the process from the message queue
+void receiveProcesses(Queue *ready_queue, Queue *Blocked_queue)
+{
     MessageBuffer RR_msg;
     int msgR;
 
@@ -41,40 +39,44 @@ void receiveProcesses(Queue* ready_queue,Queue*Blocked_queue) {
     int msgqid = msgget(key, IPC_CREAT | 0666);
 
     // Continue receiving messages as long as there are processes in the queue
-    while (1) {
+    while (1)
+    {
         msgR = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-        
-        if (msgR == -1) {
+
+        if (msgR == -1)
+        {
             // Check if the message queue is empty
-            if (errno == ENOMSG) {
-                //printf("\nMsg Q is empty\n");
-                return;  // Break the loop if the queue is empty
-            } else {
+            if (errno == ENOMSG)
+            {
+                // printf("\nMsg Q is empty\n");
+                return; // Break the loop if the queue is empty
+            }
+            else
+            {
                 perror("Error receiving message");
-                return;  // Exit the loop if there is another error
+                return; // Exit the loop if there is another error
             }
         }
 
         // Create a new process from the received message
-        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority,message.process.memSize);
-        if (allocate_memory(Memory,new_process->memSize,new_process->id))
+        Process *new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority, message.process.memSize);
+        if (allocate_memory(Memory, new_process->memSize, new_process->id))
         {
-            printf("\nMemory for ID:%d is allocated successfully\n",new_process->id);
-            enqueue(ready_queue, new_process);// Add the process to the ready queue
+            printf("\nMemory for ID:%d is allocated successfully\n", new_process->id);
+            enqueue(ready_queue, new_process); // Add the process to the ready queue
+            //WritememToFile(new_process,Memory);
         }
         else
         {
-            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n",new_process->id);
-            printf("Process ID:%d going to blocked queue",new_process->id);
-            enqueue(Blocked_queue,new_process);
+            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n", new_process->id);
+            printf("Process ID:%d going to blocked queue", new_process->id);
+            enqueue(Blocked_queue, new_process);
         }
-        
-        
     }
 }
 
-
-void preceiveProcesses(PQueue* ready_queue,Queue*Blocked_queue) {
+void preceiveProcesses(PQueue *ready_queue, Queue *Blocked_queue)
+{
     MessageBuffer RR_msg;
     int msgR;
 
@@ -82,65 +84,65 @@ void preceiveProcesses(PQueue* ready_queue,Queue*Blocked_queue) {
     int msgqid = msgget(key, IPC_CREAT | 0666);
 
     // Continue receiving messages as long as there are processes in the queue
-    while (1) {
+    while (1)
+    {
         msgR = msgrcv(msgqid, &message, sizeof(message.process), 1, IPC_NOWAIT);
-        
-        if (msgR == -1) {
+
+        if (msgR == -1)
+        {
             // Check if the message queue is empty
-            if (errno == ENOMSG) {
-                //printf("\nMsg Q is empty\n");
-                return;  // Break the loop if the queue is empty
-            } else {
+            if (errno == ENOMSG)
+            {
+                // printf("\nMsg Q is empty\n");
+                return; // Break the loop if the queue is empty
+            }
+            else
+            {
                 perror("Error receiving message");
-                return;  // Exit the loop if there is another error
+                return; // Exit the loop if there is another error
             }
         }
 
         // Create a new process from the received message
-        Process* new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority,message.process.memSize);
-        if (allocate_memory(Memory,new_process->memSize,new_process->id))
+        Process *new_process = Create_Process(message.process.id, message.process.arrival_time, message.process.runtime, message.process.priority, message.process.memSize);
+        if (allocate_memory(Memory, new_process->memSize, new_process->id))
         {
-            printf("\nMemory for ID:%d is allocated successfully\n",new_process->id);
-            penqueue(ready_queue, new_process,1);// Add the process to the ready queue
+            printf("\nMemory for ID:%d is allocated successfully\n", new_process->id);
+            penqueue(ready_queue, new_process, 1); // Add the process to the ready queue
         }
         else
         {
-            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n",new_process->id);
-            printf("Process ID:%d going to blocked queue",new_process->id);
-            enqueue(Blocked_queue,new_process);
+            printf("\nMemory for ID:%d was not allocated successfully due to insufficient memory \n", new_process->id);
+            printf("Process ID:%d going to blocked queue", new_process->id);
+            enqueue(Blocked_queue, new_process);
         }
-        
-        //printf("Queue size: %d\n", sizeQueue(ready_queue));
+
+        // printf("Queue size: %d\n", sizeQueue(ready_queue));
     }
 }
 
-
-
-
-
-
-//helper function to print the process current state
-const char* GetStateName(int state) {
-    switch (state) {
-        case NEW_PROCESS:
-            return "NEW";
-        case STARTED_STATE:
-            return "STARTED";
-        case RESUMED_STATE:
-            return "RESUMED";
-        case STOPPED_STATE:
-            return "STOPPED";
-        case FINISHED_STATE:
-            return "FINISHED";
-        default:
-            return "UNKNOWN";
+// helper function to print the process current state
+const char *GetStateName(int state)
+{
+    switch (state)
+    {
+    case NEW_PROCESS:
+        return "NEW";
+    case STARTED_STATE:
+        return "STARTED";
+    case RESUMED_STATE:
+        return "RESUMED";
+    case STOPPED_STATE:
+        return "STOPPED";
+    case FINISHED_STATE:
+        return "FINISHED";
+    default:
+        return "UNKNOWN";
     }
 }
 
-
-
-
-void PrintProcessState(Process* process) {
+void PrintProcessState(Process *process)
+{
     printf("Process ID: %d\n", process->id);
     printf("State: %s\n", GetStateName(process->pcb.state)); // Helper function to get state name
     printf("Arrival Time: %d\n", process->arrival_time);
@@ -153,15 +155,15 @@ void PrintProcessState(Process* process) {
     printf("----------------------------------\n");
 }
 
-
-
-void WritingAverages(float cpu_util, float Average_Wait_Time, float Average_weighted_turnaround_time) {
-    FILE* file = fopen("scheduler_perf.txt", "w"); // Open the file in append mode
-    if (file == NULL) {
+void WritingAverages(float cpu_util, float Average_Wait_Time, float Average_weighted_turnaround_time)
+{
+    FILE *file = fopen("scheduler_perf.txt", "w"); // Open the file in append mode
+    if (file == NULL)
+    {
         perror("Failed to open scheduler_out.txt");
         return;
     }
-    
+
     // Writing averages to the file
     fprintf(file, "----------------------------------\n");
     fprintf(file, "CPU Utilization = %.2f%%\n", cpu_util); // Added %% for clarity
@@ -172,10 +174,11 @@ void WritingAverages(float cpu_util, float Average_Wait_Time, float Average_weig
     fclose(file); // Always close the file
 }
 
-
-void WriteProcessStateToFile(Process* process) {
-    FILE* file = fopen("scheduler_log.txt", "a"); // Open the file in append mode
-    if (file == NULL) {
+void WriteProcessStateToFile(Process *process)
+{
+    FILE *file = fopen("scheduler_log.txt", "a"); // Open the file in append mode
+    if (file == NULL)
+    {
         perror("Failed to open scheduler_out.txt");
         return;
     }
@@ -192,24 +195,67 @@ void WriteProcessStateToFile(Process* process) {
     fprintf(file, "Waiting Time: %d\n", process->pcb.waitingTime);
     fprintf(file, "----------------------------------\n");
     */
-    if(process->pcb.remainingTime == 0 && GetStateName(process->pcb.state) == "FINISHED"){
-        fprintf(file,"At time %d  process %d  %s  arr %d  total %d  remain %d  wait %d  TA %d  WTA %f\n",getClk(), process->id, GetStateName(process->pcb.state), process->arrival_time, process->runtime, process->pcb.remainingTime, process->pcb.waitingTime, process->pcb.TurnaroundTime, process->pcb.WeightedTurnaroundTime);
+    if (process->pcb.remainingTime == 0 && GetStateName(process->pcb.state) == "FINISHED")
+    {
+        fprintf(file, "At time %d  process %d  %s  arr %d  total %d  remain %d  wait %d  TA %d  WTA %f\n", getClk(), process->id, GetStateName(process->pcb.state), process->arrival_time, process->runtime, process->pcb.remainingTime, process->pcb.waitingTime, process->pcb.TurnaroundTime, process->pcb.WeightedTurnaroundTime);
     }
-    else{
-        fprintf(file,"At time %d  process %d  %s  arr %d  total %d  remain %d  wait %d\n",getClk(), process->id, GetStateName(process->pcb.state), process->arrival_time, process->runtime, process->pcb.remainingTime, process->pcb.waitingTime);
+    else
+    {
+        fprintf(file, "At time %d  process %d  %s  arr %d  total %d  remain %d  wait %d\n", getClk(), process->id, GetStateName(process->pcb.state), process->arrival_time, process->runtime, process->pcb.remainingTime, process->pcb.waitingTime);
     }
-    
 
     fclose(file); // Close the file after writing
 }
 
+MemoryBlock *find_block(MemoryBlock *node, int pid)
+{
+    if (!node)
+    {
+        return NULL; // Base case: null node
+    }
 
+    if (node->pid == pid)
+    {
+        return node; // Found the block
+    }
 
-//RR_switching --> start running processes
-void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
+    // Recursively search in left and right children
+    MemoryBlock *left_result = find_block(node->left, pid);
+    if (left_result)
+        return left_result;
+
+    return find_block(node->right, pid);
+}
+
+void WritememToFile(Process *process, MemoryBlock *root)
+{
+    FILE *file = fopen("memory.log.txt", "a"); // Open the file in append mode
+    if (file == NULL)
+    {
+        perror("Failed to open memory.log.txt");
+        return;
+    }
+
+    // Find the allocated memory block
+    MemoryBlock *allocatedBlock = find_block(root, process->id);
+
+    if (process->pcb.remainingTime == 0 && GetStateName(process->pcb.state) == "FINISHED")
+    {
+        fprintf(file, "At time %d freed %d bytes for process %d  from %d to %d\n", getClk(), process->memSize, process->id, allocatedBlock->start, allocatedBlock->end);
+    }
+    else
+    {
+        fprintf(file, "At time %d allocated %d bytes for process %d  from %d to %d\n", getClk(), process->memSize, process->id, allocatedBlock->start, allocatedBlock->end);
+    }
+    fclose(file); // Close the file after writing
+}
+
+// RR_switching --> start running processes
+void RR_Switching(Queue *rr_ready_queue, int c, int *quanta)
+{
     int pid;
-    //should not happen
-    if(is_queue_empty(rr_ready_queue))
+    // should not happen
+    if (is_queue_empty(rr_ready_queue))
     {
         runningProcess = NULL;
         return;
@@ -222,10 +268,12 @@ void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
         runningProcess->pcb.state = STARTED_STATE;
         runningProcess->pcb.waitingTime = c - runningProcess->arrival_time;
         runningProcess->startTime = c;
+        WritememToFile(runningProcess, Memory);
 
         // fork new process
         pid = fork();
-        if(pid == ERROR){
+        if (pid == ERROR)
+        {
             perror("Error while forking\n");
             exit(ERROR);
         }
@@ -241,197 +289,207 @@ void RR_Switching(Queue* rr_ready_queue, int c, int* quanta){
             runningProcess->processId = pid;
         }
     }
-    else{ //preeamtive logic
+    else
+    { // preeamtive logic
         runningProcess->pcb.WaitingtimeSoFar = c - runningProcess->arrival_time - runningProcess->runtime + runningProcess->pcb.remainingTime;
         runningProcess->pcb.state = RESUMED_STATE;
-        kill(runningProcess->processId, SIGCONT); //giving a signal to the process to continue execution
+        kill(runningProcess->processId, SIGCONT); // giving a signal to the process to continue execution
     }
-    runningProcess->pcb.remainingTime--; //decrease remaining time at context switching
+    runningProcess->pcb.remainingTime--; // decrease remaining time at context switching
     *quanta = 1;
 }
 
-
-//Round-Robin Algorithm
-//Improvements, could send process by ptr to consume less memory
-void RR(){
+// Round-Robin Algorithm
+// Improvements, could send process by ptr to consume less memory
+void RR()
+{
     printf("\nWelcome to RR\n");
-    //will help in synchronization (clk will tick automatically each clk cycle)
+    // will help in synchronization (clk will tick automatically each clk cycle)
     int prev_clk = -1;
 
-    //enqueueing encoming process
-    Queue* rr_ready_queue = create_queue();
-    //for blocked processes
-    Queue*Blocked_queue=create_queue();
-    //initialising quanta
+    // enqueueing encoming process
+    Queue *rr_ready_queue = create_queue();
+    // for blocked processes
+    Queue *Blocked_queue = create_queue();
+    // initialising quanta
     int quanta = 0;
 
-    //initialising/accessing message queue to recieve processes on it; same queue as that of the scheduler 
+    // initialising/accessing message queue to recieve processes on it; same queue as that of the scheduler
     key_id = ftok("keychain", SCHEDULER_Q_KEY);
     msgq_id = msgget(key_id, 0666 | IPC_CREAT);
 
-    //message to recieve on the process from the scheduler
+    // message to recieve on the process from the scheduler
     MessageBuffer RR_msg;
 
-    if(msgq_id == ERROR){
+    if (msgq_id == ERROR)
+    {
         perror("Error in creating/accessing the message Queue!\n");
         exit(ERROR);
     }
 
-    //loop on all process in queue and run according to the quanta
-    while(TRUE_CONDITION){
+    // loop on all process in queue and run according to the quanta
+    while (TRUE_CONDITION)
+    {
         int c = getClk();
-        
-        if(prev_clk != c)
+
+        if (prev_clk != c)
         {
             printf("\n-------------------------Current Timestep:  %d----------------------------------\n", c);
-            //we finished running and scheduling all processes
-            if(Terminated_Processes == ProcessCount){
+            // we finished running and scheduling all processes
+            if (Terminated_Processes == ProcessCount)
+            {
                 // Cleaning up resources
                 free_queue(rr_ready_queue);
                 msgctl(msgq_id, IPC_RMID, NULL); // Remove the message queue
                 break;
             }
 
+            // recieve process from the message queue
+            receiveProcesses(rr_ready_queue, Blocked_queue);
 
-            //recieve process from the message queue
-            receiveProcesses(rr_ready_queue,Blocked_queue);
+            // counting idle clk cycles
 
-            //counting idle clk cycles
-            
-            if(sizeQueue(rr_ready_queue) == EMPTY_READY_Q && runningProcess == NULL){
+            if (sizeQueue(rr_ready_queue) == EMPTY_READY_Q && runningProcess == NULL)
+            {
                 idle_count++;
                 prev_clk = c;
                 continue;
             }
-            
 
-            //printf("Ready Queue size %d\n", sizeQueue(rr_ready_queue));
-            //if ready queue is not empty and currently there is no process running (start the algorithm)
-            if(sizeQueue(rr_ready_queue) != EMPTY_READY_Q && runningProcess == NULL){
+            // printf("Ready Queue size %d\n", sizeQueue(rr_ready_queue));
+            // if ready queue is not empty and currently there is no process running (start the algorithm)
+            if (sizeQueue(rr_ready_queue) != EMPTY_READY_Q && runningProcess == NULL)
+            {
                 quanta = 0;
                 RR_Switching(rr_ready_queue, c, &quanta);
                 WriteProcessStateToFile(runningProcess);
-                //printf("241\n");
+                // printf("241\n");
                 prev_clk = c;
                 continue;
             }
 
-            if(runningProcess != NULL){
-                //if process finished before quanta had finished
-                if(runningProcess->pcb.remainingTime == 0){
-                        runningProcess->pcb.state = FINISHED_STATE;
-                        runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
-                        runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
-                        runningProcess->FinishTime = c;
-                        runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
-                        total_wait_time += runningProcess->pcb.waitingTime;
-                        total_weighted_turnaround_time += runningProcess->pcb.WeightedTurnaroundTime;
-                        PrintProcessState(runningProcess); // Log process state to the terminal (for debugging)
-                        WriteProcessStateToFile(runningProcess); // Log process state to a file
-                        kill(runningProcess->processId, SIGKILL);
-                        //free(runningProcess);
-                        Terminated_Processes++;
-                        Process *BlockedProcess = peek(Blocked_queue);
-                        deallocate_memory(Memory, runningProcess->id);
-                           if(BlockedProcess!=NULL){
-                        if(Terminated_Processes==ProcessCount)
+            if (runningProcess != NULL)
+            {
+                // if process finished before quanta had finished
+                if (runningProcess->pcb.remainingTime == 0)
+                {
+                    runningProcess->pcb.state = FINISHED_STATE;
+                    runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
+                    runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
+                    runningProcess->FinishTime = c;
+                    runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
+                    total_wait_time += runningProcess->pcb.waitingTime;
+                    total_weighted_turnaround_time += runningProcess->pcb.WeightedTurnaroundTime;
+                    PrintProcessState(runningProcess);       // Log process state to the terminal (for debugging)
+                    WriteProcessStateToFile(runningProcess); // Log process state to a file
+                    kill(runningProcess->processId, SIGKILL);
+                    // free(runningProcess);
+                    Terminated_Processes++;
+                    Process *BlockedProcess = peek(Blocked_queue);
+                    WritememToFile(runningProcess, Memory);
+                    deallocate_memory(Memory, runningProcess->id);
+                    if (BlockedProcess != NULL)
+                    {
+                        if (Terminated_Processes == ProcessCount)
                         {
-                             printf("\nOUTTTT\n");
-                            return;
-                        }
-                        free(runningProcess);  
-                          if(BlockedProcess!=NULL){
-
-                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
-                        {
-                            dequeue(Blocked_queue);
-                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
-                            enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
-                        }
-                        else
-                        {
-                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
-                            enqueue(Blocked_queue, BlockedProcess);
-                        }
-                           }
-                           }
-                        //printf("251\n");
-                        //printf("Running process ID: %d\n", runningProcess->id);
-                        RR_Switching(rr_ready_queue, c, &quanta);
-                        //WriteProcessStateToFile(runningProcess);
-                        //printf("Running process ID: %d\n", runningProcess->id);
-                        prev_clk = c;
-                        continue;
-                    }
-                //TODO: adjust the metrics quanta, runningtime, waittime, ........ 
-                if(quanta >= quantum){
-                    //printf("239\n");
-                    if(runningProcess->pcb.remainingTime <= 0){
-                        runningProcess->pcb.state = FINISHED_STATE;
-                        runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
-                        runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
-                        runningProcess->FinishTime = c;
-                        PrintProcessState(runningProcess); // Log process state to a file
-                        WriteProcessStateToFile(runningProcess); // Log process state to a file
-                        //printf("Running process ID: %d", runningProcess->processId);
-                        kill(runningProcess->processId, SIGKILL);
-                        //free(runningProcess);
-                        Process *BlockedProcess = peek(Blocked_queue);
-                        deallocate_memory(Memory, runningProcess->id);
-                        if(Terminated_Processes==ProcessCount)
-                        {
-                             printf("\nOUTTTT\n");
+                            printf("\nOUTTTT\n");
                             return;
                         }
                         free(runningProcess);
-                           if(BlockedProcess!=NULL){
-                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        if (BlockedProcess != NULL)
                         {
-                            dequeue(Blocked_queue);
-                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
-                            enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
+
+                            if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                            {
+                                dequeue(Blocked_queue);
+                                printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                                enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
+                            }
+                            else
+                            {
+                                printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                                enqueue(Blocked_queue, BlockedProcess);
+                            }
                         }
-                        else
-                        {
-                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
-                            enqueue(Blocked_queue, BlockedProcess);
-                        }
-                           }
-                        Terminated_Processes++;
-                        //either switch or change running process to NULL
-                        //RR_Switching(rr_ready_queue, c, &quanta);
                     }
-                    if(runningProcess->pcb.remainingTime > 0){
+                    // printf("251\n");
+                    // printf("Running process ID: %d\n", runningProcess->id);
+                    RR_Switching(rr_ready_queue, c, &quanta);
+                    // WriteProcessStateToFile(runningProcess);
+                    // printf("Running process ID: %d\n", runningProcess->id);
+                    prev_clk = c;
+                    continue;
+                }
+                // TODO: adjust the metrics quanta, runningtime, waittime, ........
+                if (quanta >= quantum)
+                {
+                    // printf("239\n");
+                    if (runningProcess->pcb.remainingTime <= 0)
+                    {
+                        runningProcess->pcb.state = FINISHED_STATE;
+                        runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
+                        runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
+                        runningProcess->FinishTime = c;
+                        PrintProcessState(runningProcess);       // Log process state to a file
+                        WriteProcessStateToFile(runningProcess); // Log process state to a file
+                        // printf("Running process ID: %d", runningProcess->processId);
+                        kill(runningProcess->processId, SIGKILL);
+                        // free(runningProcess);
+                        Process *BlockedProcess = peek(Blocked_queue);
+                        WritememToFile(runningProcess, Memory);
+                        deallocate_memory(Memory, runningProcess->id);
+                        if (Terminated_Processes == ProcessCount)
+                        {
+                            printf("\nOUTTTT\n");
+                            return;
+                        }
+                        free(runningProcess);
+                        if (BlockedProcess != NULL)
+                        {
+                            if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                            {
+                                dequeue(Blocked_queue);
+                                printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                                enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
+                            }
+                            else
+                            {
+                                printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                                enqueue(Blocked_queue, BlockedProcess);
+                            }
+                        }
+                        Terminated_Processes++;
+                        // either switch or change running process to NULL
+                        // RR_Switching(rr_ready_queue, c, &quanta);
+                    }
+                    if (runningProcess->pcb.remainingTime > 0)
+                    {
                         runningProcess->pcb.state = STOPPED_STATE;
                         kill(runningProcess->processId, SIGSTOP);
                         enqueue(rr_ready_queue, runningProcess);
                     }
 
-                    //printf("Quanta = %d\n", quanta);
-                    
+                    // printf("Quanta = %d\n", quanta);
+
                     RR_Switching(rr_ready_queue, c, &quanta);
                     WriteProcessStateToFile(runningProcess);
-                    //printf("Running process ID: %d\n", runningProcess->id);
+                    // printf("Running process ID: %d\n", runningProcess->id);
                 }
-                else{
-                    //printf("255\n");
-                    //printf("Running process ID: %d", runningProcess->id);  //wrong process running here
-                    quanta++; //incremented each clk tic
-                    runningProcess->pcb.remainingTime--; //decrement remaining time by one clk cycle
+                else
+                {
+                    // printf("255\n");
+                    // printf("Running process ID: %d", runningProcess->id);  //wrong process running here
+                    quanta++;                            // incremented each clk tic
+                    runningProcess->pcb.remainingTime--; // decrement remaining time by one clk cycle
                     WriteProcessStateToFile(runningProcess);
-                    //printf("Remaining time = %d for process id = %d", runningProcess->pcb.remainingTime, runningProcess->id);
-                    //runningProcess->startTime = c; 
+                    // printf("Remaining time = %d for process id = %d", runningProcess->pcb.remainingTime, runningProcess->id);
+                    // runningProcess->startTime = c;
                 }
             }
-            prev_clk = c; //won't enter the loop if clk was not incremented
+            prev_clk = c; // won't enter the loop if clk was not incremented
         }
     }
-
 }
-
-
-
-
 
 void SJF()
 {
@@ -442,7 +500,7 @@ void SJF()
 
     // Create a priority queue for SJF
     PQueue *sjf_ready_queue = pcreate_queue();
-    Queue*Blocked_queue=create_queue();    //for blocked processes
+    Queue *Blocked_queue = create_queue(); // for blocked processes
 
     // Initialize message queue
     key_id = ftok("keychain", SCHEDULER_Q_KEY);
@@ -473,7 +531,7 @@ void SJF()
             }
 
             // Receive processes from the message queue
-            preceiveProcesses(sjf_ready_queue,Blocked_queue);
+            preceiveProcesses(sjf_ready_queue, Blocked_queue);
 
             // If the ready queue is not empty and no process is running, start a new process
             if (psizeQueue(sjf_ready_queue) != EMPTY_READY_Q && runningProcess == NULL)
@@ -483,6 +541,7 @@ void SJF()
                 printf("edeena haga1");
                 runningProcess->pcb.state = STARTED_STATE;
                 runningProcess->startTime = c;
+                WritememToFile(runningProcess, Memory);
 
                 int pid = fork();
                 if (pid == ERROR)
@@ -526,34 +585,34 @@ void SJF()
                     kill(runningProcess->processId, SIGKILL);
                     Terminated_Processes++;
                     Process *BlockedProcess = peek(Blocked_queue);
-                        deallocate_memory(Memory, runningProcess->id);
-                        if(Terminated_Processes==ProcessCount)
-                        {
-                             printf("\nOUTTTT\n");
-                            return;
-                        }
-                        // Terminate the process and clean up
-                        free(runningProcess);
-                           if(BlockedProcess!=NULL){
+                    WritememToFile(runningProcess, Memory);
+                    deallocate_memory(Memory, runningProcess->id);
+                    if (Terminated_Processes == ProcessCount)
+                    {
+                        printf("\nOUTTTT\n");
+                        return;
+                    }
+                    // Terminate the process and clean up
+                    free(runningProcess);
+                    if (BlockedProcess != NULL)
+                    {
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
                             printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
-                            penqueue(sjf_ready_queue, BlockedProcess,1); // Add the process to the ready queue
+                            penqueue(sjf_ready_queue, BlockedProcess, 1); // Add the process to the ready queue
                         }
                         else
                         {
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
-                           }
+                    }
 
-
-
-                    
                     printf("ahla mesa");
 
-                    if(Terminated_Processes == ProcessCount){
+                    if (Terminated_Processes == ProcessCount)
+                    {
                         break;
                     }
 
@@ -564,6 +623,7 @@ void SJF()
                         printf("edena haga baa");
                         runningProcess->pcb.state = STARTED_STATE;
                         runningProcess->startTime = c;
+                        WritememToFile(runningProcess, Memory);
 
                         // Fork the next process
                         int pid = fork();
@@ -674,8 +734,8 @@ void HPF()
     // Create a queue for new processes and a priority queue for scheduling
     Queue *temp_queue = create_queue();
     PQueue *hpf_ready_queue = pcreate_queue();
-    //for blocked processes
-    Queue*Blocked_queue=create_queue();
+    // for blocked processes
+    Queue *Blocked_queue = create_queue();
     // Initialize the message queue
     key_id = ftok("keychain", SCHEDULER_Q_KEY);
     msgq_id = msgget(key_id, 0666 | IPC_CREAT);
@@ -706,7 +766,7 @@ void HPF()
             }
 
             // Receive new processes
-            receiveProcesses(temp_queue,Blocked_queue);
+            receiveProcesses(temp_queue, Blocked_queue);
 
             // Transfer processes from the temporary queue to the priority queue
             while (!is_queue_empty(temp_queue))
@@ -721,6 +781,7 @@ void HPF()
             if (runningProcess == NULL && !pis_queue_empty(hpf_ready_queue))
             {
                 HPF_Switching(hpf_ready_queue, c);
+                WritememToFile(runningProcess, Memory);
                 WriteProcessStateToFile(runningProcess);
                 prev_clk = c;
                 continue;
@@ -739,6 +800,7 @@ void HPF()
 
                     penqueue(hpf_ready_queue, runningProcess, 0); // Reinsert the current process into the queue
                     HPF_Switching(hpf_ready_queue, c);
+                    WritememToFile(runningProcess, Memory);
                     WriteProcessStateToFile(runningProcess);
                     prev_clk = c;
                     continue;
@@ -768,48 +830,32 @@ void HPF()
                     }
                     Terminated_Processes++;
                     Process *BlockedProcess = peek(Blocked_queue);
-                        deallocate_memory(Memory, runningProcess->id);
-                        if(Terminated_Processes==ProcessCount)
-                        {
-                             printf("\nOUTTTT\n");
-                            return;
-                        }
-                        free(runningProcess);
-                           if(BlockedProcess!=NULL){
+                    WritememToFile(runningProcess, Memory);
+                    deallocate_memory(Memory, runningProcess->id);
+                    if (Terminated_Processes == ProcessCount)
+                    {
+                        printf("\nOUTTTT\n");
+                        return;
+                    }
+                    free(runningProcess);
+                    if (BlockedProcess != NULL)
+                    {
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
                             printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
-                            penqueue(hpf_ready_queue, BlockedProcess,0); // Add the process to the ready queue
+                            penqueue(hpf_ready_queue, BlockedProcess, 0); // Add the process to the ready queue
                         }
                         else
                         {
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
                             enqueue(Blocked_queue, BlockedProcess);
                         }
-                           }
-
-
-
-
-
-
-
-
-
-
-                    
-
-
-
-
-
-
-
-
+                    }
 
                     runningProcess = NULL; // to avoid accessing invalid pointer after deallocating the memory
                     HPF_Switching(hpf_ready_queue, c);
+                    WritememToFile(runningProcess, Memory);
                     WriteProcessStateToFile(runningProcess);
                     prev_clk = c; // to avoid decrementing the remaining time twice in one timestep
                     continue;
@@ -826,17 +872,6 @@ void HPF()
     }
     destroyClk(true);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////MLFQ/////////////////////////////////
 // Initialize MLFQ queues
@@ -901,6 +936,9 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
        }
        printf("Arrived at %d should start running at %d ",runningProcess->arrival_time,getClk());
     }
+
+
+
              int startClk = getClk();  // Starting time of this process
             int endClk = startClk + quanta;  // The time when this quantum will end
             // printf("\n END CLK IS %d\n",endClk);
@@ -910,6 +948,8 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 runningProcess->pcb.state = STARTED_STATE;
                 runningProcess->pcb.waitingTime = c - runningProcess->arrival_time;
                 runningProcess->startTime = c; 
+                WriteProcessStateToFile(runningProcess);
+                WritememToFile(runningProcess, Memory);
                 //fork new process
             int pid = fork();
                 if (pid == ERROR) {
@@ -970,35 +1010,35 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 Terminated_Processes++;
                 kill(runningProcess->processId, SIGKILL);  // Terminate the process
                 PrintProcessState(runningProcess);
-                Process*BlockedProcess=peek(BlockedQueue);
-                printf("\nBlocked Queue size:%d\n",sizeQueue(BlockedQueue));
-                deallocate_memory(Memory,runningProcess->id);
-                if(Terminated_Processes==ProcessCount)
-                {
-                    printf("\nOUTTTT\n");
-                    return;
-                }
+                WriteProcessStateToFile(runningProcess);
+                Process *BlockedProcess = peek(BlockedQueue);
+                WritememToFile(runningProcess,Memory);
+                deallocate_memory(Memory, runningProcess->id);//deallocating successful
                 free(runningProcess);
-                if(BlockedProcess!=NULL)
-                {
-                if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
-                {
-                    if(sizeQueue(BlockedQueue)!=0)
-                    {
-                        printf("\nBlocked Queue size:%d\n",sizeQueue(BlockedQueue));
-                        dequeue(BlockedQueue);
-                    }
-                    printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
-                    enqueue(ready_queue, BlockedProcess); // Add the process to the ready queue
-                }
-                else
-                {
-                    printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
-                    enqueue(BlockedQueue, BlockedProcess);
-                }
-                }
-                return; // Exit as the process has finished
-                }
+                if(BlockedProcess!=NULL){
+                        if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
+                        {
+                            dequeue(BlockedQueue);
+                            printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                            enqueue(ready_queue, BlockedProcess); // Add the process to the ready queue
+                            //WritememToFile(BlockedProcess,Memory);
+                        }
+                        else
+                        {
+                            printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
+                            enqueue(BlockedQueue, BlockedProcess);
+                        }
+                           }
+                           else{
+                            printf("\nNo Blocked Process\n");
+                           }
+
+
+
+                return;  // Exit as the process has finished
+            }
+
+           
             }
     }
              // If the process has remaining time after the quantum, stop and demote it
@@ -1019,7 +1059,9 @@ void MLFQ(int quanta, int processcount) {
     int c = getClk();  // Get the current clock time
     Queue* priorityQueues[MAX_PRIORITY];  // Array of priority queues
     Queue* RDYQUEUE = create_queue();  // Ready queue to temporarily hold incoming processes
-    Queue*Blocked_queue=create_queue();    //for blocked processes
+    Queue* Blocked_queue = create_queue();  // Blocked queue to temporarily hold processes that arent allocated
+
+
     initMLFQ(priorityQueues);  // Initialize the priority queues
     
     int prevClk = -1;  // Store the previous clock tick
@@ -1038,8 +1080,8 @@ void MLFQ(int quanta, int processcount) {
                 break;
             }
             printf("At Time %d: Checking for new messages...\n", currentClk);
-            receiveProcesses(RDYQUEUE,Blocked_queue);  // Receive processes and add them to the ready queue
-
+            int prevRdySize= sizeQueue(RDYQUEUE);
+            receiveProcesses(RDYQUEUE,Blocked_queue);  // Receive processes and add them to the ready queue            
             // If there are processes in the RDYQUEUE, add them to the appropriate priority queue
             if (!is_queue_empty(RDYQUEUE)) {
                 Process* arrivedProcess = dequeue(RDYQUEUE);
@@ -1072,7 +1114,7 @@ void MLFQ(int quanta, int processcount) {
                 if(processesPresent>0){
                  // Check all queues after each clk tick and assign running process
                  for (int i = 0; i < MAX_PRIORITY; i++) //start from 0 highest priority to 10 Lowest priority
-                 {      // printf("\nChecking queue number %d\n",i);
+                 {       printf("\nChecking queue number %d\n",i);
                             if (!is_queue_empty(priorityQueues[i]))
                              {
                                 MLFQ_Switching(priorityQueues[i], quanta, currentClk, i, priorityQueues,Blocked_queue,RDYQUEUE);
@@ -1088,47 +1130,35 @@ void MLFQ(int quanta, int processcount) {
     printf("All processes have been terminated. Scheduler exiting.\n");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     initClk();
-    Memory=initialize_memory(MemorySize);
+    Memory = initialize_memory(MemorySize);
     int AlgoType = atoi(argv[1]);
     quantum = atoi(argv[2]);
     ProcessCount = atoi(argv[3]);
-    
-    printf("process count is %d",ProcessCount);
+
+    printf("process count is %d", ProcessCount);
 
     switch (AlgoType)
     {
     case 1:
-            SJF();
-            break;
-        case 2:
-            HPF();
-            break;
-        case 3:
-            RR();
-            break;
-        case 4:
-            MLFQ(quantum,ProcessCount);
+        SJF();
+        break;
+    case 2:
+        HPF();
+        break;
+    case 3:
+        RR();
+        break;
+    case 4:
+        MLFQ(quantum, ProcessCount);
 
-        default:
-            printf("invalid algorithm");
-            break;
+    default:
+        printf("invalid algorithm");
+        break;
     }
-    
+
     int final_clk = getClk();
     float cpu_util = ((float)(final_clk - idle_count) / final_clk) * 100;
     float Average_Wait_Time = total_wait_time / ProcessCount;
@@ -1145,4 +1175,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-

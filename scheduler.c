@@ -1015,7 +1015,8 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                 WritememToFile(runningProcess,Memory);
                 deallocate_memory(Memory, runningProcess->id);//deallocating successful
                 free(runningProcess);
-                if(BlockedProcess!=NULL){
+                printf("\nBlocked queue size:%d\n",sizeQueue(BlockedQueue));
+                if(sizeQueue(BlockedQueue)!=0){
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(BlockedQueue);
@@ -1026,7 +1027,6 @@ void MLFQ_Switching(Queue* priorityQueue, int quanta,int c,int priority,Queue **
                         else
                         {
                             printf("\nProcess Was Not Pulled from blocked\t. Memory for ID:%d was not allocated successfully due to insufficient memory\n", BlockedProcess->id);
-                            enqueue(BlockedQueue, BlockedProcess);
                         }
                            }
                            else{

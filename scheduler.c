@@ -451,6 +451,7 @@ void RR()
                             {
                                 dequeue(Blocked_queue);
                                 printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
+                                WritememToFile(BlockedProcess, Memory);
                                 enqueue(rr_ready_queue, BlockedProcess); // Add the process to the ready queue
                             }
                             else
@@ -600,6 +601,7 @@ void SJF()
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
+                            WritememToFile(BlockedProcess, Memory);
                             printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
                             penqueue(sjf_ready_queue, BlockedProcess, 1); // Add the process to the ready queue
                         }
@@ -845,6 +847,7 @@ void HPF()
                         if (allocate_memory(Memory, BlockedProcess->memSize, BlockedProcess->id))
                         {
                             dequeue(Blocked_queue);
+                            WritememToFile(BlockedProcess, Memory);
                             printf("\nProcess Pulled from blocked\t.Memory for ID:%d is allocated successfully\n", BlockedProcess->id);
                             penqueue(hpf_ready_queue, BlockedProcess, 0); // Add the process to the ready queue
                         }

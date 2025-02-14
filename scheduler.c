@@ -30,6 +30,7 @@ int total_weighted_turnaround_time = 0;
 MemoryBlock *Memory;
 
 // helper function to recieve the process from the message queue
+void WritememToFile(Process *process, MemoryBlock *root);//function prototype
 void receiveProcesses(Queue *ready_queue, Queue *Blocked_queue)
 {
     MessageBuffer RR_msg;
@@ -227,7 +228,6 @@ MemoryBlock *find_block(MemoryBlock *node, int pid)
 
     return find_block(node->right, pid);
 }
-
 void WritememToFile(Process *process, MemoryBlock *root)
 {
     FILE *file = fopen("memory.log.txt", "a"); // Open the file in append mode
@@ -1054,7 +1054,6 @@ void MLFQ_Switching(Queue *priorityQueue, int quanta, int c, int priority, Queue
                 runningProcess->pcb.TurnaroundTime = c - runningProcess->arrival_time;
                 runningProcess->pcb.WeightedTurnaroundTime = (double)runningProcess->pcb.TurnaroundTime / runningProcess->runtime;
                 runningProcess->FinishTime = c;
-                runningProcess->pcb.waitingTime = runningProcess->pcb.TurnaroundTime - runningProcess->runtime;
                 Terminated_Processes++;
                 kill(runningProcess->processId, SIGKILL); // Terminate the process
                 PrintProcessState(runningProcess);
